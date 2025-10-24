@@ -129,7 +129,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /^https:\/\/gportal-proxy-server\.my-malikyash\.workers\.dev/,
+            urlPattern: /^https:\/\/gportal\.rachi\.tech/,
             handler: "NetworkFirst",
             options: {
               cacheName: "worker-api-cache",
