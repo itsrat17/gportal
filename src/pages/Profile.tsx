@@ -807,6 +807,12 @@ export default function Profile() {
           )}
         </TabsContent>
       </Tabs>
+       <div className="text-center p-4 overflow-auto max-sm:text-sm text-lg">
+        Made with ❤️ by{" "}
+        <a href="https://github.com/itsrat17" className="text-primary">
+          Rachit Baliyan
+        </a>
+      </div>
     </div>
   );
 }
