@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { BarChart3, Bell, ChartSpline, Table2, User } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function BottomNav() {
   const navItems = [
@@ -9,8 +11,27 @@ export default function BottomNav() {
     { name: 'TIME TABLE', path: '/timetable', icon: Table2 },
     { name: 'PROFILE', path: '/profile', icon: User },
   ];
+  // Safari bug workaround: if any ancestor has transform, fixed children can behave like absolute.
+  // Render the fixed bottom nav into document.body via a portal so it's outside transformed stacking contexts.
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    // Only run on client
+    const el = document.createElement('div');
+    containerRef.current = el;
+    document.body.appendChild(el);
+    setMounted(true);
+
+    return () => {
+      if (containerRef.current && containerRef.current.parentNode) {
+        containerRef.current.parentNode.removeChild(containerRef.current);
+      }
+      containerRef.current = null;
+    };
+  }, []);
+
+  const nav = (
     <div className="fixed bottom-0 left-0 flex w-screen items-center justify-between gap-1 bg-muted px-2 py-4 sm:gap-0 sm:px-4">
       {navItems.map((item) => (
         <NavLink
@@ -45,4 +66,8 @@ export default function BottomNav() {
       ))}
     </div>
   );
+
+  if (!mounted || !containerRef.current) return null;
+
+  return createPortal(nav, containerRef.current);
 }
